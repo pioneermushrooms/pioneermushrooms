@@ -12,6 +12,15 @@ A multi-crew AI agent deployed as a Discord bot, powered by CrewAI. Routes tasks
 ### TWDT Video Bot — Automated Match Recaps
 Generates weekly recap videos for the Trench Wars Draft Tournament. Scrapes forum posts, generates narration scripts, overlays a talking-head avatar onto game footage, and produces polished 1080p videos — all from a single command.
 
+### In-House Chess — Real-Time Multiplayer Chess
+Private chess club app for playing real-time games with coworkers. Full-stack TypeScript with WebSocket multiplayer, authentication, and Stripe payments.
+
+### Political Fact-Checker — Accountability Dashboard
+Tracks political claims, truth rates, and accountability metrics sourced from Notion. Full-stack TypeScript dashboard with React frontend and data pipeline.
+
+### Pixel Spore Farm — Business Simulator Game
+Deep gourmet mushroom farm simulator with genetics, facility expansion, market dynamics, and value-add processing. Pure client-side HTML5 Canvas game.
+
 ---
 
 ## Integration Stack
@@ -42,9 +51,20 @@ These are the services, APIs, and tools I've integrated into working production 
 ![GitHub API](https://img.shields.io/badge/GitHub_API-181717?style=for-the-badge&logo=github&logoColor=white)
 ![YouTube / yt--dlp](https://img.shields.io/badge/YouTube_/_yt--dlp-FF0000?style=for-the-badge&logo=youtube&logoColor=white)
 
+### Web / Full-Stack
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Notion API](https://img.shields.io/badge/Notion_API-000000?style=for-the-badge&logo=notion&logoColor=white)
+![Stripe](https://img.shields.io/badge/Stripe-635BFF?style=for-the-badge&logo=stripe&logoColor=white)
+![WebSockets](https://img.shields.io/badge/WebSockets-010101?style=for-the-badge&logoColor=white)
+![Drizzle ORM](https://img.shields.io/badge/Drizzle_ORM-C5F74F?style=for-the-badge&logoColor=black)
+![HTML5 Canvas](https://img.shields.io/badge/HTML5_Canvas-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+
 ### Infrastructure / Deployment
 ![Railway](https://img.shields.io/badge/Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
 
 ---
@@ -55,6 +75,9 @@ These are the services, APIs, and tools I've integrated into working production 
 |---------|-------------|-----------------|
 | [**maigent**](https://github.com/pioneermushrooms/maigent) | Self-evolving AI agent / Discord bot | CrewAI, Claude, Gemini, Discord, Telegram, Twilio, Playwright, PixelLab, OpenAI TTS, ElevenLabs, Tavily, GitHub API, Streamlit |
 | [**twdt-video-bot**](https://github.com/pioneermushrooms/twdt-video-bot) | Automated match recap videos | HeyGen, ElevenLabs, FFmpeg, yt-dlp, OpenAI, Playwright |
+| [**in-house-chess**](https://github.com/pioneermushrooms/in-house-chess) | Real-time multiplayer chess app | React, TypeScript, WebSockets, Stripe, Drizzle ORM, Railway |
+| [**political-fact-checker**](https://github.com/pioneermushrooms/political-fact-checker) | Political accountability dashboard | React, TypeScript, Notion API, Vercel |
+| [**mushroom-game**](https://github.com/pioneermushrooms/mushroom-game) | Gourmet mushroom farm simulator | HTML5 Canvas, JavaScript |
 
 ---
 

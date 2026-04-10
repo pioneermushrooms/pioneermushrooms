@@ -66,7 +66,7 @@
   /* Graph canvas */
   #graph-container {
     width: 100%;
-    height: 620px;
+    height: 680px;
     margin-bottom: 64px;
     border-radius: 16px;
     border: 1px solid rgba(200, 168, 78, 0.15);
@@ -216,6 +216,36 @@
         <span class="tag data">Playwright</span>
       </div>
     </div>
+    <div class="card">
+      <h3>In-House Chess</h3>
+      <p>Private chess club app for playing real-time games with coworkers. Full-stack TypeScript with WebSocket multiplayer, user authentication, and Stripe payment integration.</p>
+      <div class="tags">
+        <span class="tag data">React</span>
+        <span class="tag data">TypeScript</span>
+        <span class="tag msg">WebSockets</span>
+        <span class="tag infra">Stripe</span>
+        <span class="tag data">Drizzle ORM</span>
+        <span class="tag infra">Railway</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Political Fact-Checker</h3>
+      <p>Dashboard that tracks political claims, truth rates, and accountability metrics. Pulls data from Notion and presents it through a React frontend with live visualizations.</p>
+      <div class="tags">
+        <span class="tag data">React</span>
+        <span class="tag data">TypeScript</span>
+        <span class="tag data">Notion API</span>
+        <span class="tag infra">Vercel</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Pixel Spore Farm</h3>
+      <p>Deep gourmet mushroom farm business simulator. Genetics system, facility expansion, market dynamics, and value-add processing — all running client-side in the browser.</p>
+      <div class="tags">
+        <span class="tag data">HTML5 Canvas</span>
+        <span class="tag data">JavaScript</span>
+      </div>
+    </div>
   </div>
 
   <div class="footer">
@@ -257,7 +287,10 @@ const COLORS = {
 const nodes = [
   // Projects (center hubs)
   { id: 'maigent',   label: 'MAIGENT',         type: 'project', r: 30 },
-  { id: 'videbot',   label: 'Video Bot',       type: 'project', r: 26 },
+  { id: 'videbot',   label: 'Video Bot',       type: 'project', r: 24 },
+  { id: 'chess',     label: 'Chess',           type: 'project', r: 24 },
+  { id: 'factchk',   label: 'Fact-Checker',    type: 'project', r: 24 },
+  { id: 'mushroom',  label: 'Spore Farm',      type: 'project', r: 22 },
 
   // AI
   { id: 'claude',    label: 'Claude',           type: 'ai',    r: 18 },
@@ -276,17 +309,24 @@ const nodes = [
   { id: 'discord',   label: 'Discord',          type: 'msg',   r: 18 },
   { id: 'telegram',  label: 'Telegram',         type: 'msg',   r: 15 },
   { id: 'twilio',    label: 'Twilio',           type: 'msg',   r: 14 },
+  { id: 'websock',   label: 'WebSockets',       type: 'msg',   r: 15 },
 
-  // Data / Research
+  // Data / Research / Web
   { id: 'playw',     label: 'Playwright',       type: 'data',  r: 15 },
   { id: 'tavily',    label: 'Tavily',           type: 'data',  r: 14 },
   { id: 'ghapi',     label: 'GitHub API',       type: 'data',  r: 14 },
   { id: 'ytdlp',     label: 'yt-dlp',           type: 'data',  r: 14 },
+  { id: 'react',     label: 'React',            type: 'data',  r: 16 },
+  { id: 'notion',    label: 'Notion API',       type: 'data',  r: 14 },
+  { id: 'drizzle',   label: 'Drizzle ORM',      type: 'data',  r: 13 },
+  { id: 'canvas',    label: 'HTML5 Canvas',     type: 'data',  r: 14 },
 
   // Infra
   { id: 'railway',   label: 'Railway',          type: 'infra', r: 14 },
   { id: 'docker',    label: 'Docker',           type: 'infra', r: 14 },
   { id: 'streamlit', label: 'Streamlit',        type: 'infra', r: 14 },
+  { id: 'vercel',    label: 'Vercel',           type: 'infra', r: 14 },
+  { id: 'stripe',    label: 'Stripe',           type: 'infra', r: 14 },
 ];
 
 // Edges (which services connect to which projects)
@@ -303,16 +343,33 @@ const edges = [
   ['videbot', 'heygen'],  ['videbot', 'eleven'],  ['videbot', 'ffmpeg'],
   ['videbot', 'openai'],  ['videbot', 'ytdlp'],   ['videbot', 'playw'],
 
-  // Shared connections (cross-project)
+  // In-House Chess connections
+  ['chess', 'react'],     ['chess', 'websock'],   ['chess', 'stripe'],
+  ['chess', 'drizzle'],   ['chess', 'railway'],
+
+  // Political Fact-Checker connections
+  ['factchk', 'react'],   ['factchk', 'notion'],  ['factchk', 'vercel'],
+
+  // Pixel Spore Farm connections
+  ['mushroom', 'canvas'],
+
+  // Cross-project links
   ['maigent', 'videbot'],
 ];
 
-// Initialize positions — projects center, services spread around
+// Initialize positions — projects in a ring near center, services spread around
+const projectPositions = {
+  maigent:  { x: 0.50, y: 0.40 },
+  videbot:  { x: 0.30, y: 0.55 },
+  chess:    { x: 0.70, y: 0.55 },
+  factchk:  { x: 0.35, y: 0.30 },
+  mushroom: { x: 0.65, y: 0.30 },
+};
 const nodeMap = {};
 nodes.forEach((n, i) => {
-  if (n.type === 'project') {
-    n.x = W * (n.id === 'maigent' ? 0.38 : 0.62);
-    n.y = H * 0.5;
+  if (n.type === 'project' && projectPositions[n.id]) {
+    n.x = W * projectPositions[n.id].x;
+    n.y = H * projectPositions[n.id].y;
   } else {
     const angle = (i / nodes.length) * Math.PI * 2 + Math.random() * 0.5;
     const dist = 150 + Math.random() * 120;
