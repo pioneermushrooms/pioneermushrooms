@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chris — Integration Architect</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0a0a0f;
+    color: #e0e0e8;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Subtle animated gradient background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(88, 50, 168, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(40, 100, 180, 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, rgba(168, 85, 50, 0.05) 0%, transparent 50%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 24px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .header h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #c8a84e 0%, #e8d88e 50%, #c8a84e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+
+  .header .subtitle {
+    font-size: 1.15rem;
+    color: #8888a0;
+    font-weight: 300;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* Graph canvas */
+  #graph-container {
+    width: 100%;
+    height: 620px;
+    margin-bottom: 64px;
+    border-radius: 16px;
+    border: 1px solid rgba(200, 168, 78, 0.15);
+    background: rgba(10, 10, 18, 0.6);
+    backdrop-filter: blur(20px);
+    overflow: hidden;
+    position: relative;
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%;
+    cursor: default;
+  }
+
+  /* Project cards */
+  .projects {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 64px;
+  }
+
+  @media (max-width: 700px) {
+    .projects { grid-template-columns: 1fr; }
+    .header h1 { font-size: 2rem; }
+    #graph-container { height: 450px; }
+  }
+
+  .card {
+    background: rgba(20, 20, 32, 0.8);
+    border: 1px solid rgba(200, 168, 78, 0.12);
+    border-radius: 12px;
+    padding: 28px;
+    transition: border-color 0.3s, transform 0.2s;
+  }
+
+  .card:hover {
+    border-color: rgba(200, 168, 78, 0.35);
+    transform: translateY(-2px);
+  }
+
+  .card h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #c8a84e;
+    margin-bottom: 8px;
+  }
+
+  .card p {
+    font-size: 0.95rem;
+    color: #9999b0;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tag {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .tag.ai       { background: rgba(88, 50, 168, 0.25); color: #b088e8; }
+  .tag.voice    { background: rgba(168, 50, 88, 0.25); color: #e088b0; }
+  .tag.msg      { background: rgba(50, 100, 168, 0.25); color: #88b8e8; }
+  .tag.data     { background: rgba(50, 168, 100, 0.25); color: #88e8b8; }
+  .tag.infra    { background: rgba(168, 140, 50, 0.25); color: #e8d888; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 40px 0;
+    border-top: 1px solid rgba(200, 168, 78, 0.1);
+    color: #555568;
+    font-size: 0.9rem;
+    line-height: 1.8;
+  }
+
+  .footer a {
+    color: #c8a84e;
+    text-decoration: none;
+  }
+
+  .footer .philosophy {
+    font-style: italic;
+    color: #7777a0;
+    margin-bottom: 12px;
+    font-size: 1rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <h1>Chris</h1>
+    <p class="subtitle">
+      I build AI-powered systems by connecting APIs, models, and services
+      into products that work end-to-end. Here's what I've wired together.
+    </p>
+  </div>
+
+  <div id="graph-container">
+    <canvas id="graph"></canvas>
+  </div>
+
+  <div class="projects">
+    <div class="card">
+      <h3>MAIGENT</h3>
+      <p>Self-evolving AI agent deployed as a Discord bot. Routes tasks across specialized crews — research, data, comms, code, ops — with automatic model selection. Builds its own tools and runs autonomous research.</p>
+      <div class="tags">
+        <span class="tag ai">Claude</span>
+        <span class="tag ai">Gemini</span>
+        <span class="tag ai">CrewAI</span>
+        <span class="tag msg">Discord</span>
+        <span class="tag msg">Telegram</span>
+        <span class="tag msg">Twilio</span>
+        <span class="tag voice">ElevenLabs</span>
+        <span class="tag voice">OpenAI TTS</span>
+        <span class="tag voice">PixelLab</span>
+        <span class="tag data">Playwright</span>
+        <span class="tag data">Tavily</span>
+        <span class="tag data">GitHub API</span>
+        <span class="tag infra">Streamlit</span>
+        <span class="tag infra">Railway</span>
+        <span class="tag infra">Docker</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>TWDT Video Bot</h3>
+      <p>Automated match recap video pipeline for the Trench Wars Draft Tournament. Scrapes forum posts, generates narration, overlays a talking-head avatar onto game footage, and produces polished 1080p videos.</p>
+      <div class="tags">
+        <span class="tag voice">HeyGen</span>
+        <span class="tag voice">ElevenLabs</span>
+        <span class="tag voice">FFmpeg</span>
+        <span class="tag ai">OpenAI</span>
+        <span class="tag data">yt-dlp</span>
+        <span class="tag data">Playwright</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p class="philosophy">I don't write the code — I architect the systems.<br>AI writes the implementation. I design what to build and how it connects.</p>
+    <p><a href="https://github.com/pioneermushrooms">github.com/pioneermushrooms</a></p>
+  </div>
+
+</div>
+
+<script>
+// ── Interactive Force-Directed Graph ──
+const canvas = document.getElementById('graph');
+const ctx = canvas.getContext('2d');
+const container = document.getElementById('graph-container');
+
+let W, H, dpr;
+function resize() {
+  dpr = window.devicePixelRatio || 1;
+  W = container.clientWidth;
+  H = container.clientHeight;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+resize();
+window.addEventListener('resize', resize);
+
+// Node types & colors
+const COLORS = {
+  project: '#c8a84e',
+  ai:     '#8855cc',
+  voice:  '#cc5577',
+  msg:    '#4488cc',
+  data:   '#44aa66',
+  infra:  '#aa8833',
+};
+
+// Nodes
+const nodes = [
+  // Projects (center hubs)
+  { id: 'maigent',   label: 'MAIGENT',         type: 'project', r: 30 },
+  { id: 'videbot',   label: 'Video Bot',       type: 'project', r: 26 },
+
+  // AI
+  { id: 'claude',    label: 'Claude',           type: 'ai',    r: 18 },
+  { id: 'gemini',    label: 'Gemini',           type: 'ai',    r: 18 },
+  { id: 'openai',    label: 'OpenAI',           type: 'ai',    r: 18 },
+  { id: 'crewai',    label: 'CrewAI',           type: 'ai',    r: 16 },
+
+  // Voice / Media
+  { id: 'eleven',    label: 'ElevenLabs',       type: 'voice', r: 16 },
+  { id: 'heygen',    label: 'HeyGen',           type: 'voice', r: 16 },
+  { id: 'pixlab',    label: 'PixelLab',         type: 'voice', r: 15 },
+  { id: 'oaitts',    label: 'OpenAI TTS',       type: 'voice', r: 14 },
+  { id: 'ffmpeg',    label: 'FFmpeg',           type: 'voice', r: 15 },
+
+  // Messaging
+  { id: 'discord',   label: 'Discord',          type: 'msg',   r: 18 },
+  { id: 'telegram',  label: 'Telegram',         type: 'msg',   r: 15 },
+  { id: 'twilio',    label: 'Twilio',           type: 'msg',   r: 14 },
+
+  // Data / Research
+  { id: 'playw',     label: 'Playwright',       type: 'data',  r: 15 },
+  { id: 'tavily',    label: 'Tavily',           type: 'data',  r: 14 },
+  { id: 'ghapi',     label: 'GitHub API',       type: 'data',  r: 14 },
+  { id: 'ytdlp',     label: 'yt-dlp',           type: 'data',  r: 14 },
+
+  // Infra
+  { id: 'railway',   label: 'Railway',          type: 'infra', r: 14 },
+  { id: 'docker',    label: 'Docker',           type: 'infra', r: 14 },
+  { id: 'streamlit', label: 'Streamlit',        type: 'infra', r: 14 },
+];
+
+// Edges (which services connect to which projects)
+const edges = [
+  // MAIGENT connections
+  ['maigent', 'claude'],  ['maigent', 'gemini'],  ['maigent', 'openai'],
+  ['maigent', 'crewai'],  ['maigent', 'eleven'],  ['maigent', 'pixlab'],
+  ['maigent', 'oaitts'],  ['maigent', 'discord'],  ['maigent', 'telegram'],
+  ['maigent', 'twilio'],  ['maigent', 'playw'],   ['maigent', 'tavily'],
+  ['maigent', 'ghapi'],   ['maigent', 'railway'], ['maigent', 'docker'],
+  ['maigent', 'streamlit'],
+
+  // Video Bot connections
+  ['videbot', 'heygen'],  ['videbot', 'eleven'],  ['videbot', 'ffmpeg'],
+  ['videbot', 'openai'],  ['videbot', 'ytdlp'],   ['videbot', 'playw'],
+
+  // Shared connections (cross-project)
+  ['maigent', 'videbot'],
+];
+
+// Initialize positions — projects center, services spread around
+const nodeMap = {};
+nodes.forEach((n, i) => {
+  if (n.type === 'project') {
+    n.x = W * (n.id === 'maigent' ? 0.38 : 0.62);
+    n.y = H * 0.5;
+  } else {
+    const angle = (i / nodes.length) * Math.PI * 2 + Math.random() * 0.5;
+    const dist = 150 + Math.random() * 120;
+    n.x = W / 2 + Math.cos(angle) * dist;
+    n.y = H / 2 + Math.sin(angle) * dist;
+  }
+  n.vx = 0;
+  n.vy = 0;
+  nodeMap[n.id] = n;
+});
+
+// Physics simulation
+function simulate() {
+  const REPULSION = 3500;
+  const ATTRACTION = 0.008;
+  const DAMPING = 0.88;
+  const CENTER_PULL = 0.001;
+
+  // Repulsion between all nodes
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const a = nodes[i], b = nodes[j];
+      let dx = a.x - b.x, dy = a.y - b.y;
+      let dist = Math.sqrt(dx * dx + dy * dy) || 1;
+      let force = REPULSION / (dist * dist);
+      let fx = (dx / dist) * force, fy = (dy / dist) * force;
+      a.vx += fx; a.vy += fy;
+      b.vx -= fx; b.vy -= fy;
+    }
+  }
+
+  // Attraction along edges
+  edges.forEach(([aId, bId]) => {
+    const a = nodeMap[aId], b = nodeMap[bId];
+    let dx = b.x - a.x, dy = b.y - a.y;
+    let dist = Math.sqrt(dx * dx + dy * dy) || 1;
+    let target = (a.type === 'project' && b.type === 'project') ? 180 : 160;
+    let force = (dist - target) * ATTRACTION;
+    let fx = (dx / dist) * force, fy = (dy / dist) * force;
+    a.vx += fx; a.vy += fy;
+    b.vx -= fx; b.vy -= fy;
+  });
+
+  // Center gravity
+  nodes.forEach(n => {
+    n.vx += (W / 2 - n.x) * CENTER_PULL;
+    n.vy += (H / 2 - n.y) * CENTER_PULL;
+  });
+
+  // Apply velocity
+  nodes.forEach(n => {
+    n.vx *= DAMPING;
+    n.vy *= DAMPING;
+    n.x += n.vx;
+    n.y += n.vy;
+    // Keep in bounds
+    n.x = Math.max(n.r + 10, Math.min(W - n.r - 10, n.x));
+    n.y = Math.max(n.r + 10, Math.min(H - n.r - 10, n.y));
+  });
+}
+
+// Hover state
+let hoveredNode = null;
+
+canvas.addEventListener('mousemove', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  hoveredNode = null;
+  for (const n of nodes) {
+    const dx = mx - n.x, dy = my - n.y;
+    if (dx * dx + dy * dy < n.r * n.r) {
+      hoveredNode = n;
+      break;
+    }
+  }
+  canvas.style.cursor = hoveredNode ? 'pointer' : 'default';
+});
+
+// Drawing
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  // Draw edges
+  edges.forEach(([aId, bId]) => {
+    const a = nodeMap[aId], b = nodeMap[bId];
+    const isHighlighted = hoveredNode && (hoveredNode.id === aId || hoveredNode.id === bId);
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+    ctx.strokeStyle = isHighlighted
+      ? 'rgba(200, 168, 78, 0.5)'
+      : 'rgba(100, 100, 120, 0.15)';
+    ctx.lineWidth = isHighlighted ? 2 : 1;
+    ctx.stroke();
+  });
+
+  // Draw nodes
+  nodes.forEach(n => {
+    const isHovered = hoveredNode && hoveredNode.id === n.id;
+    const isConnected = hoveredNode && edges.some(
+      ([a, b]) => (a === hoveredNode.id && b === n.id) || (b === hoveredNode.id && a === n.id)
+    );
+    const dimmed = hoveredNode && !isHovered && !isConnected;
+
+    // Glow for hovered
+    if (isHovered) {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r + 8, 0, Math.PI * 2);
+      const glow = ctx.createRadialGradient(n.x, n.y, n.r, n.x, n.y, n.r + 8);
+      glow.addColorStop(0, COLORS[n.type] + '40');
+      glow.addColorStop(1, 'transparent');
+      ctx.fillStyle = glow;
+      ctx.fill();
+    }
+
+    // Node circle
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+    const alpha = dimmed ? '30' : (n.type === 'project' ? 'dd' : '99');
+    ctx.fillStyle = COLORS[n.type] + alpha;
+    ctx.fill();
+    ctx.strokeStyle = COLORS[n.type] + (dimmed ? '20' : '88');
+    ctx.lineWidth = n.type === 'project' ? 2.5 : 1.5;
+    ctx.stroke();
+
+    // Label
+    ctx.fillStyle = dimmed ? 'rgba(200,200,220,0.15)' : 'rgba(200,200,220,0.9)';
+    ctx.font = `${n.type === 'project' ? '600 14' : '400 11'}px Inter, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(n.label, n.x, n.y);
+  });
+}
+
+function loop() {
+  simulate();
+  draw();
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>
